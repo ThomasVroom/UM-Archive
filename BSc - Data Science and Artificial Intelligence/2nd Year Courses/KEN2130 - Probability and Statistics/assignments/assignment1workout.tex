@@ -1,0 +1,99 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{listings}
+
+\title{Assignment 1 Workout}
+\author{Thomas Vroom - i6291496}
+\date{September 2022}
+
+\begin{document}
+\maketitle
+\pagenumbering{gobble}
+
+\section*{Question 1}
+Let $X$ be the number of people who show up to the movie.
+Assuming the movie theater has sold 100 tickets and the 
+probability of a single person showing up is 50\%, 
+we can say:
+
+\[ X \sim \text{Bin} (100, 0.5) \]
+
+\smallskip
+\noindent
+To calculate the probability of $k$ people showing up to
+the movie, we can use the following formula:
+
+\[ P(X = k) = \binom{100}{k} {0.5}^k ({0.5}^{100-k}) \]
+
+\smallskip
+\noindent
+Which can be simplified to:
+
+\[ P(X = k) = \binom{100}{k} {0.5}^{100} \]
+
+\smallskip
+\noindent
+Using this, we can calculate the probability of more than
+50 people showing up to be:
+
+\[ P(X > 50) = P(X = 51) + P(X = 52) + ... + P(X = 100) \]
+
+\bigskip
+\noindent
+To calculate this we can use the following R code:
+
+\begin{lstlisting}
+    sum = 0;
+    for (k in 51:100) {
+        sum = sum + choose(100, k) * (0.5)^100;
+    }
+    print(sum);
+\end{lstlisting}
+
+\smallskip
+\noindent
+This gives us a final probability of $0.4602054$.
+
+\section*{Question 2}
+
+\textbf{1. Two random variables that are 
+independent and identically distributed}
+
+\smallskip
+\noindent
+X: Throw a dice.
+Y: Throw another dice.
+
+\bigskip
+\noindent
+\textbf{2. Two random variables that are 
+independent and not identically distributed}
+
+\smallskip
+\noindent
+X: Throw a 6-sided-dice.
+Y: Throw an 8-sided-dice.
+
+\bigskip
+\noindent
+\textbf{3. Two random variables that are 
+dependent and identically distributed}
+
+\smallskip
+\noindent
+X: Throw a dice.
+Y: The result of X.
+
+\bigskip
+\noindent
+\textbf{4. Two random variables that are 
+dependent and not identically distributed}
+
+\smallskip
+\noindent
+X: Throw a 6-sided-dice.
+Y: If the result of X is 3 or lower, throw another
+6-sided-dice. Else throw an 8-sided-dice.
+
+\end{document}

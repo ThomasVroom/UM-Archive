@@ -1,0 +1,264 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=50pt]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\usepackage{titling}
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}%
+}
+
+\graphicspath{/images}
+\geometry{footskip=0.8cm}
+
+\title{Linear Programming}
+\subtitle{Graded Assignments 4}
+\author{Thomas Vroom (6291496)}
+
+\begin{document}
+\maketitle
+
+%
+% Exercise 1
+%
+\section{Primal-Dual Relations}
+\subsection{A. Construct the Dual}
+Consider the following primal linear program:
+\begin{align*}
+  &\mathrm{max} \quad Z = 10x_1 + 6x_2 + 8x_3 \\[2pt]
+  &\mathrm{s.t.} \quad 
+  \begin{array}[t]{r c r c r c r}
+      8x_1 & + & 2x_2 & + & 3x_3 & \leq & 15 \\
+      4x_1 & + & 3x_2 & & & \leq & 20 \\
+      x_1 & & & + & x_3 & \leq & 10
+  \end{array}\\
+  &\mathrm{and} \quad x_1, x_2, x_3 \geq 0
+\end{align*}
+
+\noindent
+The dual of this linear program is:
+\begin{align*}
+  &\mathrm{min} \quad W = 15y_1 + 20y_2 + 10y_3 \\[2pt]
+  &\mathrm{s.t.} \quad 
+  \begin{array}[t]{r c r c r c r}
+      8y_1 & + & 4y_2 & + & y_3 & \geq & 10 \\
+      2y_1 & + & 3y_2 & & & \geq & 6 \\
+      3y_1 & & & + & y_3 & \geq & 8
+  \end{array}\\
+  &\mathrm{and} \quad y_1, y_2, y_3 \geq 0
+\end{align*}
+
+\noindent
+We can now add slack variables to both linear programs:
+
+\begin{align*}
+  &\mathrm{max} \quad Z = 10x_1 + 6x_2 + 8x_3 \\[2pt]
+  &\mathrm{s.t.} \quad 
+  \begin{array}[t]{r c r c r c r c r c r c r c}
+      8x_1 & + & 2x_2 & + & 3x_3 & + & \textcolor{red}{x_4} & & & & & = & 15 \\
+      4x_1 & + & 3x_2 & & & & & + & \textcolor{red}{x_5} & & & = & 20 \\
+      x_1 & & & + & x_3 & & & & & + & \textcolor{red}{x_6} & = & 10
+  \end{array}\\
+  &\mathrm{and} \quad x_1, x_2, x_3, x_4, x_5, x_6 \geq 0
+\end{align*}
+
+\newpage
+\begin{align*}
+  &\mathrm{min} \quad W = 15y_1 + 20y_2 + 10y_3 \\[2pt]
+  &\mathrm{s.t.} \quad 
+  \begin{array}[t]{r c r c r c r c r c r c r c}
+      8y_1 & + & 4y_2 & + & 3y_3 & - & \textcolor{blue}{y_4} & & & & & = & 10 \\
+      2y_1 & + & 3y_2 & & & & & - & \textcolor{blue}{y_5} & & & = & 6 \\
+      3y_1 & & & + & y_3 & & & & & - & \textcolor{blue}{y_6} & = & 8
+  \end{array}\\
+  &\mathrm{and} \quad y_1, y_2, y_3, y_4, y_5, y_6 \geq 0
+\end{align*}
+
+\noindent
+We know $X$ is a basic feasible solution of the primal LP.
+Let $Y$ be the complementary basic solution of the dual LP.
+We have the following information about $Y$:
+\[ y_1 = \frac{8}{3} \]
+\[ y_2 = 0 \]
+\[ y_3 = 0 \]
+
+\noindent
+We can plug these values into the constraints of the dual, and then solve for the missing variables.
+This gives the following values for $y_4, y_5, y_6$:
+\[ y_4 = 11\frac{1}{3} \]
+\[ y_5 = -\frac{2}{3} \]
+\[ y_6 = 0 \]
+
+\noindent
+Now we know that the basis of $Y$ is $\{y_1, y_4, y_5\}$.
+We can now use the complementary slackness theorem to find the basis of $X$:
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{lll|lll}
+  $\textcolor{blue}{y_4}$ & $\textcolor{blue}{y_5}$ & $y_6$ & $\textcolor{blue}{y_1}$ & $y_2$ & $y_3$ \\ \hline
+  $x_1$ & $x_2$ & $\textcolor{blue}{x_3}$ & $x_4$ & $\textcolor{blue}{x_5}$ & $\textcolor{blue}{x_6}$
+  \end{tabular}
+\end{table}
+
+\noindent
+So we know that the basis of $X$ is $\{x_3, x_5, x_6\}$.
+
+\noindent
+\\
+Since $y_5$ is equal to a negative value, we know that $Y$ is not a feasible solution.
+This means that $X$ is not an optimal solution of the primal LP.
+
+\noindent
+\\
+We can see in the above table that $y_5$ is related to $x_2$.
+Since $y_5$ is the only negative variable in $Y$, we know that $x_2$ will be the entering basic variable if we continue pivoting from $X$.
+
+\newpage
+\subsection{B. Example Linear Program}
+Consider the following primal linear program $P$:
+\begin{align*}
+  &\mathrm{max} \quad Z = x_2 \\[2pt]
+  &\mathrm{s.t.} \quad 
+  \begin{array}[t]{r c r}
+      x_1 & \leq & 1
+  \end{array}\\
+  &\mathrm{and} \quad x_1, x_2 \geq 0
+\end{align*}
+
+\noindent
+And its dual $D$:
+\begin{align*}
+  &\mathrm{min} \quad W = y_1 \\[2pt]
+  &\mathrm{s.t.} \quad 
+  \begin{array}[t]{r c r}
+      y_1 & \geq & 0 \\
+      \textcolor{red}{0} & \textcolor{red}{\geq} & \textcolor{red}{1}
+  \end{array}\\
+  &\mathrm{and} \quad y_1 \geq 0
+\end{align*}
+
+\noindent
+We can easily verify that $P$ is unbounded and $D$ is infeasible.
+
+%
+% Exercise 2
+%
+\section{Proof Question}
+\subsection{A. ILP and LP-Relaxation}
+This problem can be expressed as the following integer linear program:
+\begin{align*}
+  &\mathrm{Let} \quad x_i \in V \\
+  &\mathrm{max} \quad \Sigma_{i} x_i \\
+  &\mathrm{s.t.} \quad 
+  \begin{array}[t]{r c r}
+      x_u + x_v & \leq & 1, \text{ for every edge } e = \{u, v\} \in E 
+  \end{array}\\
+  &\mathrm{and} \quad x_i = \{0, 1\}
+\end{align*}
+
+\noindent
+This ILP has $|V|$ binary decision variables and $|E|$ constraints.\\
+The LP-relaxation of this ILP is:
+\begin{align*}
+  &\mathrm{Let} \quad x_i \in V \\
+  &\mathrm{max} \quad \Sigma_{i} x_i \\
+  &\mathrm{s.t.} \quad 
+  \begin{array}[t]{r c r}
+      x_u + x_v & \leq & 1, \text{ for every edge } e = \{u, v\} \in E 
+  \end{array}\\
+  &\mathrm{and} \quad 0 \leq x_i \leq 1
+\end{align*}
+
+\subsection{B. LP-Relaxation Variable Constraints}
+We can change the variable constraints to $x_i \geq 0$ without any issues.
+The $\leq 1$ constraints are already implied by the constraints of the LP.
+If a decision variable $x$ would be greater than 1, the constraint $x_u + x_v \leq 1$ for the respective $x$ would be violated.
+
+\newpage
+\subsection{C. Construct the Dual}
+Let $P$ be the following primal LP:
+\begin{align*}
+  &\mathrm{Let} \quad x_i \in V \\
+  &\mathrm{max} \quad \Sigma_{i} x_i \\
+  &\mathrm{s.t.} \quad 
+  \begin{array}[t]{r c r}
+      x_u + x_v & \leq & 1, \text{ for every edge } e = \{u, v\} \in E 
+  \end{array}\\
+  &\mathrm{and} \quad x_i \geq 0
+\end{align*}
+
+\noindent
+This program has the following dual LP $D$:
+\begin{align*}
+  &\mathrm{Let} \quad e_i \in E \\
+  &\mathrm{min} \quad \Sigma_{i} e_i \\
+  &\mathrm{s.t.} \quad 
+  \begin{array}[t]{r c r}
+      \Sigma_{u} e_{u, v} & \geq & 1, \text{ for every edge } u \text{ connected to vertex } v, \text{ for every vertex } v \in V
+  \end{array}\\
+  &\mathrm{and} \quad e_i \geq 0
+\end{align*}
+
+\noindent
+To summarize, the primal LP tries to maximize the number of vertices such that none are connected, which is known as the \textbf{maximum independent set} problem.
+The dual tries to minimize the number of edges such that every vertex is included, which is known as the \textbf{minimum edge cover} problem.
+
+\noindent
+\\
+This means that the dual of the LP-relaxation of the maximum independent set problem is the LP-relaxation of the minimum edge cover problem.
+
+\subsection{D. Proof}
+We need to prove that, given a complete graph $K_n$, for $n \geq 2$:
+
+\[ \frac{\text{Opt. of ILP applied to } K_n}{\text{Opt. of LP applied to } K_n} = \frac{1}{\frac{n}{2}} \]
+
+\noindent
+Because of the way this fraction is written, this proof can be reduced to two proofs:
+
+\begin{enumerate}
+  \item The optimum of the ILP applied to $K_n$ is equal to 1.
+  \item The optimum of the LP applied to $K_n$ is equal to $\frac{n}{2}$.
+\end{enumerate}
+
+\noindent
+The proof of the first statement is trivial.
+An independent set is defined as a set of vertices where no two vertices are connected.
+Because $K_n$ is fully connected, there is no independent set of size greater than 1.
+
+\noindent
+\\
+To prove the second statement, we can use the fact that the optimum of the LP-relaxation of the maximum independent set problem is equal to the optimum of the LP-relaxation of the minimum edge cover problem (strong duality theorem).
+
+\newpage
+\noindent
+\\
+The LP-relaxation of the minimum edge cover problem has $|E|$ decision variables and $|V| = n$ constraints.
+If we sum over every constraint, we get the following:
+\[ 2 \cdot \Sigma_i e_i \geq n \]
+
+\noindent
+The 2 here comes from every edge being connected to 2 different vertices, $\Sigma_i e_i$ comes from summing over every constraint, and $n$ comes from there being one constraint per vertex.
+We can rewrite this statement as:
+\[ \Sigma_i e_i \geq \frac{n}{2} \]
+
+\noindent
+Note that $\Sigma_i e_i$ is also the objective function of the LP-relaxation of the minimum edge cover problem (as shown in the previous section).
+This means that $\frac{n}{2}$ is a lower bound of the optimum.
+
+% shady stuff starts here
+\noindent
+\\
+Recall that the LP-relaxation is trying to \textit{minimize} the objective function, and that all the constraints are of the form $\geq$.
+There is no point for any decision variable to take a value greater than 1, as that would only push the objective function the wrong way.
+This means that at the optimum every constraint will be tight (i.e. there will be no constraint greater than 1, as that would push the objective function in the wrong direction).
+From this we can conclude that the lower bound of the optimum, $\frac{n}{2}$ is also the upper bound of the optimum.
+This means that the optimum of the LP-relaxation of the minimum edge cover problem is equal to $\frac{n}{2}$. $\Box$
+
+\end{document}
