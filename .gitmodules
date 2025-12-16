@@ -10,3 +10,6 @@
 [submodule "MSc - Artificial Intelligence/KEN4224 - Data Visualization/project"]
 	path = MSc - Artificial Intelligence/KEN4224 - Data Visualization/project
 	url = https://github.com/ThomasVroom/Nabijheid-Voorzieningen-DataVis
+[submodule "MSc - Artificial Intelligence/KEN4114 - Autonomous Robotic Systems/project"]
+	path = MSc - Artificial Intelligence/KEN4114 - Autonomous Robotic Systems/project
+	url = https://github.com/ThomasVroom/ARS-Assignment
