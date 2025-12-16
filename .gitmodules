@@ -7,3 +7,6 @@
 [submodule "MSc - Artificial Intelligence/KEN4157 - Reinforcement Learning"]
 	path = MSc - Artificial Intelligence/KEN4157 - Reinforcement Learning
 	url = https://github.com/ThomasVroom/Adversarial-LunarLander
+[submodule "MSc - Artificial Intelligence/KEN4224 - Data Visualization/project"]
+	path = MSc - Artificial Intelligence/KEN4224 - Data Visualization/project
+	url = https://github.com/ThomasVroom/Nabijheid-Voorzieningen-DataVis
