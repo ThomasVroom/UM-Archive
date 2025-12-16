@@ -5,7 +5,7 @@ This repository acts as an archive of notes and assignments I made during my BSc
 ### BSc - Data Science and Artificial Intelligence
 
 | **Course Code** | **Course** | **Year** | **Content** |
-|:---------------:|------------|:--------:|-------------|
+|:---------------:|------------|:--------:|:-----------:|
 | KEN2130 | [Probability and Statistics](./BSc%20-%20Data%20Science%20and%20Artificial%20Intelligence/KEN2130%20-%20Probability%20and%20Statistics/) | 22-23 | Notes |
 | KEN2240 | [Machine Learning](./BSc%20-%20Data%20Science%20and%20Artificial%20Intelligence/KEN2240%20-%20Machine%20Learning/) | 22-23 | Notes |
 | KEN2420 | [Theoretical Computer Science](./BSc%20-%20Data%20Science%20and%20Artificial%20Intelligence/KEN2420%20-%20Theoretical%20Computer%20Science/) | 22-23 | Notes |
@@ -19,7 +19,7 @@ This repository acts as an archive of notes and assignments I made during my BSc
 ### MSc - Artificial Intelligence
 
 | **Course Code** | **Course** | **Year** | **Content** |
-|:---------------:|------------|:--------:|-------------|
+|:---------------:|------------|:--------:|:-----------:|
 | KEN4113 | [Data Mining](./MSc%20-%20Artificial%20Intelligence/KEN4113%20-%20Data%20Mining/) | 25-26 | Notes |
 | KEN4114 | [Autonomous Robotic Systems](./MSc%20-%20Artificial%20Intelligence/KEN4114%20-%20Autonomous%20Robotic%20Systems/) | 24-25 | Notes + Project |
 | KEN4123 | [Intelligent Search & Games](https://github.com/ThomasVroom/Fianco) | 24-25 | Project |
