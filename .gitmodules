@@ -4,3 +4,6 @@
 [submodule "MSc - Artificial Intelligence/KEN4123 - Intelligent Search & Games"]
 	path = MSc - Artificial Intelligence/KEN4123 - Intelligent Search & Games
 	url = https://github.com/ThomasVroom/Fianco
+[submodule "MSc - Artificial Intelligence/KEN4157 - Reinforcement Learning"]
+	path = MSc - Artificial Intelligence/KEN4157 - Reinforcement Learning
+	url = https://github.com/ThomasVroom/Adversarial-LunarLander
