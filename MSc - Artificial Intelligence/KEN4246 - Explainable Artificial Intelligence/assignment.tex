@@ -1,0 +1,262 @@
+\documentclass[sigconf]{acmart}
+
+\usepackage{makecell}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\title{Explainable Deep Reinforcement Learning:\\How Does AI Play Atari Games?}
+\author{Thomas Vroom (i6291496)}
+
+\begin{document}
+
+%
+% ABSTRACT
+%
+\begin{abstract}
+    Deep reinforcement learning has achieved great results in a variety of domains, but it suffers from a significant loss in interpretability that raises concerns regarding its deployment in critical areas.
+    Explainable reinforcement learning has emerged as a field aiming to develop techniques that provide insights into the decision-making of deep reinforcement learning agents.
+    In this literature review we critically analyze the work of five state-of-the-art papers in explainable reinforcement learning, ranging from hand-crafted saliency maps to the learning of inherently interpretable surrogate models.
+    We select and compare these works on the shared domain of Atari game-playing, one of the most popular deep learning benchmarks.
+    Our findings reveal that high quality, layman-interpretable explanations of deep reinforcement learning agents are possible, but at the cost of scalability and freedom of policy architecture.
+    Saliency maps prove a useful tool for visualizing feature importance, but are susceptible to noise which limits their effectiveness as automated explanations.
+\end{abstract}
+
+\maketitle
+
+%
+% Introduction
+%
+\section{Introduction} \label{sec:introduction}
+In The Challenge of Reinforcement Learning\cite{sutton1992introduction}, Sutton states:
+
+\begin{quote}
+    Part of the appeal of reinforcement learning is that it is in a sense the whole AI problem in a microcosm.
+\end{quote}
+
+Reinforcement Learning (RL) concerns the problem of an autonomous agent learning how to interact with its environment to achieve a goal, a problem that lies at the heart of the study of artificial intelligence\cite{sutton1992introduction,abel2023definition}.
+When combined with deep learning, RL agents have achieved breakthrough performances in game-playing, robotics, natural language processing, and many more domains\cite{li2018deepreinforcementlearningoverview}.
+
+Deep Reinforcement Learning (DRL) is however not without its limitations;
+DRL agents are often seen as `black-box' systems due to the complexity of their internal architecture, where millions of interactions between parameters render their decision-making incomprehensible to most human observers\cite{li2018deepreinforcementlearningoverview,csahin2025unlocking}.
+This lack of interpretability raises concerns regarding the deployment of DRL agents in critical areas such as autonomous vehicles and healthcare services, and limits the degree to which humans can learn from strategies developed by these agents\cite{csahin2025unlocking,Cheng2025}.
+To address these concerns, Explainable Reinforcement Learning (XRL) has emerged as a field aiming to develop techniques that provide insights into the decision-making process of DRL agents\cite{Cheng2025}.
+
+In this literature review, we offer a critical analysis and comparison of five state-of-the-art methods for explaining the decision-making of DRL agents.
+To aid our comparison, we select our methods based on a shared domain: The playing of Atari games, one of the most popular benchmarks for DRL agents\cite{hosu2016playingatarigamesdeep}.
+
+The rest of this paper is structured as follows:
+First we will discuss relevant background information on RL and other related topics in Section \ref{sec:background}.
+We will summarize, compare, and critically analyze a selection of five state-of-the-art methods in Section \ref{sec:papers}.
+Finally, we will draw our conclusions and pose directions for future research in Section \ref{sec:conclusion}.
+
+%
+% Background
+%
+\section{Background} \label{sec:background}
+We will first discuss some relevant background information.
+
+\subsection{Reinforcement Learning}
+Reinforcement Learning is a major paradigm of machine learning, focused on autonomous agents that learn to achieve a goal through interacting with their environment\cite{sutton1992introduction,Cheng2025,andrew2018reinforcement}.
+RL agents are trained on sequential decision-making problems where the environment can be modeled as a \textit{Markov Decision Process} (MDP), specified by the tuple $(\mathcal{S}, \mathcal{A}, P, R, \gamma)$: \cite{Cheng2025,andrew2018reinforcement}
+
+\begin{itemize}
+    \item $\mathcal{S}$: The set of states representing possible configurations of the environment.
+    \item $\mathcal{A}$: The set of possible actions available to the agent.
+    \item $P(s^\prime | s, a)$: The transition probability function that describes the probability of transitioning to state $s^\prime$ after performing action $a$ in state $s$.
+    \item $R(s, a)$: The immediate reward obtained after performing action $a$ in state $s$.
+    \item $\gamma \in (0, 1)$: The \textit{discount factor}, balancing the importance of immediate and future rewards.
+\end{itemize}
+
+Reinforcement Learning is the process of learning a \textit{policy}, a function $\pi(s, a): \mathcal{S} \rightarrow \mathcal{A}$ that defines which action to take in each state, solely through interacting with the environment (in the context of this paper, the word \textit{policy} is used interchangeably with the word \textit{strategy}).
+The goal is to find an optimal policy $\pi^\star$ that maximizes the total (expected) reward\cite{Cheng2025}.
+What makes learning an optimal policy challenging is the inherent trade-off between \textit{exploration} and \textit{exploitation}: The agent has to exploit its learned knowledge to obtain reward, but to learn said knowledge it must explore other actions as well\cite{andrew2018reinforcement}.
+
+The \textit{value function} of an agent is a function $V^\pi(s): \mathcal{S} \rightarrow \mathbb{R}$ that describes the long-term reward the agent expects after visiting a state $s$, formally defined as: \cite{Cheng2025,andrew2018reinforcement}
+\begin{equation}
+    V^\pi(s) = \sum_{a \in \mathcal{A}} \pi(a | s) \left[ R(s, a) + \gamma \sum_{s^\prime \in \mathcal{S}} P(s^\prime | s, a) V^\pi(s^\prime) \right]
+\end{equation}
+The value function is continually updated by the agent based on the experienced consequences of its actions, and often forms the foundation of an agent's decision making\cite{andrew2018reinforcement}.
+
+A simple, but effective architecture for RL is the \textit{Actor-Critic} framework.
+This framework consists of an \textit{actor} who interacts with the environment, proposing what action to take in the current state, and a \textit{critic} who evaluates the actions taken by the actor\cite{konda1999actor}.
+In its most common form, the critic is a value function that gets updated based on the rewards obtained by the actor; The actor is a greedy policy that selects the action that leads to the highest (expected) long-term reward, according to the value function.
+By letting this process run for an infinite amount of time, it is guaranteed to converge to an optimal policy\cite{konda1999actor}.
+
+\textit{Q-Learning} is possibly the most well-known RL algorithm, being applicable to environments even without explicit knowledge of the underlying MDP, while still maintaining strong convergence guarantees\cite{watkins1992q}.
+During Q-learning the agent estimates a \textit{Q-value} $Q(s, a)$, defined as the expected long-term reward of performing action $a$ in state $s$, then greedily selects the action with the highest Q-value in the current state\cite{Cheng2025,watkins1992q}.
+
+\subsection{Deep Reinforcement Learning}
+While Q-learning has been proven to be very effective in small, structured environments, it suffers greatly from the curse of dim-\\ensionality\cite{Cheng2025}. % hard-coded to prevent column bleeding
+To address this limitation, DRL agents use neural networks or other function approximators to replace the explicit enumeration of policies or value functions\cite{Cheng2025,mnih2015human}.
+
+A simple, but effective example of DRL is \textit{Deep Q-Networks} (DQNs), utilizing a deep neural network to approximate optimal Q-values\cite{hosu2016playingatarigamesdeep,mnih2015human}.
+This network takes in a state input $s$, processes this input through several layers of a neural network, then predicts the Q-values for all possible actions $\mathcal{A}$ simultaneously\cite{Cheng2025}.
+
+One of the most popular benchmarks for DRL agents is the playing of \textit{Atari games}.
+This started to gain popularity after the release of the Arcade Learning Environment (ALE), an emulator of the Atari 2600 game console that supports over 50 different Atari games\cite{hosu2016playingatarigamesdeep,bellemare2013arcade}.
+While these games may appear simple in concept, they provide high-dimensional sensory input data through RGB images at 60 Hz.
+Additionally, the majority of these games were designed to be difficult and engaging for human players, making them an excellent benchmark for (artificial) intelligence\cite{hosu2016playingatarigamesdeep,mnih2015human}.
+The introduction of (convolutional) DQNs caused a major breakthrough in the playing of Atari games, paving the way for superhuman performance\cite{mnih2015human}.
+
+\subsection{Explainable Reinforcement Learning}
+The main concern regarding DRL agents and deep learning in general is the loss of interpretability, with the complex architecture of a neural network being near incomprehensible for most human observers\cite{li2018deepreinforcementlearningoverview,csahin2025unlocking}.
+The field of XRL aims to develop techniques that provide insight into the decision-making of these agents, and can generate explanations for non-expert observers\cite{Cheng2025}.
+The authors of \cite{Cheng2025} define four categories of techniques for explaining DRL agents:
+
+\begin{itemize}
+    \item \textit{Feature-level Explanation Methods}: Methods that aim to identify the most important features in the agent's observation space that influence its decision-making.
+    \item \textit{State-level Explanation Methods}: Methods that focus on identifying critical states in the agent's trajectory that significantly impact its performance.
+    \item \textit{Dataset-level Explanation Methods}: Methods that focus on understanding how specific training examples influence the learned policy of the agent.
+    \item \textit{Model-level Explanation Methods}: Methods that focus on the self-explainability of policies, aiming to make the agent's decision-making process inherently interpretable.
+\end{itemize}
+
+Since we are mainly concerned with the interpretability loss of DRL agents, we will focus on \textit{feature-level} and \textit{model-level} explanation methods in this review.
+
+Because Atari games have a high-dimensional, visual input space, a useful tool for explaining feature importance is \textit{Saliency Maps}: visual heatmaps that highlight the most important regions influencing the agent's behavior, often constructed through the accumulation of gradients\cite{simonyan2013deep}.
+
+%
+% Literature Review
+%
+\section{Literature Review} \label{sec:papers}
+This section outlines our methodology for selecting papers, followed by an overview and critical analysis of the selected works.
+A concise overview of the main points discussed in this section can be found in Table \ref{tab:comparison}.
+
+\subsection{Methodology}
+We searched for candidate papers on Google Scholar with the following keywords: `Deep Reinforcement Learning', `Explainable', and `Atari'.
+After sorting the results by relevance, we went through the first three pages and filtered out any papers that did not meet the following inclusion criteria:
+
+\begin{itemize}
+    \item The paper introduces at least one novel method for generating explanations (no surveys).
+    \item The paper comes from a peer-reviewed journal or conference.
+    \item The work is evaluated on Atari games.
+    \item The generated explanations are \textit{feature-level} or \textit{model-level}.
+\end{itemize}
+
+This process gave us a selection of eight papers: \cite{Zahavy2016, Greydanus2018, Huber2019, Nikulin2019, Sieusahai2021, Weitkamp2018, Joo2019, Mott2019}.
+After additional reading we decided to omit \cite{Weitkamp2018} and \cite{Joo2019} from this review, as they both use minor variations of the well-established Grad-CAM algorithm\cite{selvaraju2017grad} to generate saliency maps, which is already well-represented in the remainder of our selection.
+We also decided to omit \cite{Mott2019} as they use a very similar approach to \cite{Nikulin2019}, with the latter being more in-depth.
+This gave us a final selection of five papers: \cite{Zahavy2016, Greydanus2018, Huber2019, Nikulin2019, Sieusahai2021}.
+
+\subsection{Overview}
+We will now give a short overview of the selected methods in order of publication date:
+
+\paragraph{\cite{Zahavy2016}} The authors of this paper train and evaluate a DQN while recording the activations of the last hidden layer and some auxiliary hand-crafted features (Q-value estimates, rewards, played actions, raw frames, etc.) for each visited state.
+They then apply the t-SNE dimensionality reduction algorithm\cite{van2008visualizing} on the activations data and visualize the results while allowing coloring and filtering of data points based on the auxiliary features.
+The final analysis and generation of explanations is done manually.
+
+\paragraph{\cite{Greydanus2018}} The authors of this paper introduce a method to generate perturbation-based saliency maps of an agent's policy and value function.
+This method consists of adding spatial uncertainty, e.g. a Gaussian blur, to a certain part of the input space, followed by measuring how much the policy or value estimation changes in response.
+This gets repeated for every pixel of an input frame to generate a full saliency map.
+
+\paragraph{\cite{Huber2019}} The authors of this paper introduce an adjustment to the layer-wise relevance propagation (LRP) $z^+$ rule\cite{bach2015pixel} for generating saliency maps.
+They first adjust the rule to work with DQNs, then introduce an $\argmax$ operator in the convolutional layers to focus on the most contributing neurons.
+According to the authors, this makes the saliency maps more selective and easier to interpret for people who are not domain experts.
+
+\paragraph{\cite{Nikulin2019}} The authors of this paper introduce a novel policy architecture that generates saliency maps as part of its forward pass procedure, requiring no further post-hoc analysis.
+The saliency maps are generated in real-time using a soft attention module that is applied at the end of the feature extraction process.
+The authors show that, despite this unusual policy architecture, the performance cost remains minimal.
+
+\paragraph{\cite{Sieusahai2021}} The authors of this paper first extract objects of interest from the input space, and use their characteristics like position and velocity to create a more percept-like input representation.
+They then train an inherently interpretable surrogate model (e.g. a decision tree) to imitate the behavior of the original policy.
+This method is the only \textit{model-level} explanation method of our selection.
+
+\subsection{Analysis}
+% --- TABLE
+\newcommand{\vpad}{\\[8mm]}
+\begin{table*}[t!]
+\centering
+\caption{Comparison of selected methods on various criteria.}
+\begin{tabular}{clcccll}
+
+\textbf{Paper} & \multicolumn{1}{c}{\textbf{Method}} & \textbf{Scalability} & \textbf{Timing} & \textbf{Policy} & \multicolumn{1}{c}{\textbf{Strengths}} & \multicolumn{1}{c}{\textbf{Limitations}} \\ \hline
+
+\cite{Zahavy2016} & \makecell[l]{t-SNE with\\manual analysis} & Very low & Post-hoc & Any\footnotemark[1] & \makecell[l]{+ case-specific and\\detailed explanations\\+ can identify\\hierarchical policies} & \makecell[l]{- expert analysis and\\feature-crafting required\\- human interpretation\\adds bias} \vpad
+
+\cite{Greydanus2018} & \makecell[l]{Perturbation-based\\saliency maps} & Low & Post-hoc & Any\footnotemark[1] & \makecell[l]{+ less noisy saliency maps\\+ saliency maps for\\actor-critic methods} & \makecell[l]{- high computational cost\\- only measures policy's\\sensitivity to perturbation} \vpad
+
+\cite{Huber2019} & \makecell[l]{LRP-based\\saliency maps} & High & Post-hoc & Restricted & \makecell[l]{+ less noisy saliency maps\\+ low computational cost} & \makecell[l]{- can be \textit{too} selective\\- only works with DQNs} \vpad
+
+\cite{Nikulin2019} & \makecell[l]{Saliency maps directly\\from policy} & High & Real-time & Restricted & \makecell[l]{+ real-time saliency maps,\\no performance cost\\+ low computational cost} & \makecell[l]{- noisy saliency maps\\- requires specific policy\\architecture} \vpad
+
+\cite{Sieusahai2021} & \makecell[l]{Inherently interpretable\\surrogate model} & Low & \makecell{Ante-hoc/\\Post-hoc\footnotemark[2]} & Restricted & \makecell[l]{+ global explanations\\+ can identify\\hierarchical policies} & \makecell[l]{- unreliable feature\\encoding\\- model is surrogate}
+
+\end{tabular}
+\label{tab:comparison}
+\end{table*}
+% ---
+
+A unique property of \cite{Zahavy2016} and \cite{Sieusahai2021} is that these are the only two methods in our selection that are able to identify \textit{hierarchical policies}: Policies that break down complex objectives into several sub-goals, changing their strategy depending on what sub-goal they are currently focusing on.
+This is especially relevant in the context of Atari games, as the strategies of expert human players can often be expressed as hierarchical policies as well\cite{huang2019playingatariballgames}.
+
+The standout feature of \cite{Zahavy2016} is that the authors are able to generate very detailed, case-specific, layman-interpretable explanations.
+A big contributor to this is the manual analysis component, which is also its biggest limitation: Not only is a domain expert required to analyze the final visualization and provide explanations, the features shown in the visualization need to be hand-crafted for each game as well.
+This is of course a huge limitation in terms of scalability, but also restricts the quality of the explanations to human interpretation.
+
+Having humans generate explanations of deep learning models adds an inherent bias to human-interpretable strategies, and makes it more challenging to identify issues like model overfitting.
+An example of this in the game of \textit{Pong} is discussed in \cite{Greydanus2018}:
+
+\begin{quote}
+    Our initial understanding of the kill shot ... was that the agent had learned to first 'lure' the opponent into the lower region of the frame and then aim the ball towards the top of the frame, where it was difficult to return.
+    Saliency visualizations told a different story ... we see that the agent attends to very little besides its own paddle: not even the ball.
+\end{quote}
+
+Saliency maps, as used by \cite{Greydanus2018,Huber2019,Nikulin2019}, suffer less from this issue as they directly visualize what the policy (seemingly) attends to.
+However, this comes with the cost of potentially being less interpretable for non-experts, depending on how the saliency map is generated.
+
+Whereas saliency maps are most frequently constructed using gradient-based methods, the authors of \cite{Greydanus2018} opt for a perturbation approach to make the saliency maps less noisy and more interpretable.
+In the context of reinforcement learning, perturbation can be used to generate saliency maps for both the policy as well as the value function of an agent, allowing for explanations of both the actor and the critic in actor-critic methods.
+
+As discussed in \cite{huber2022benchmarking}, the main limitation of constructing saliency maps using perturbation is that the map only shows how sensitive the agent is to that specific perturbation method.
+It can thus be questioned whether these saliency maps actually explain the decision making of the agent, or simply show which parts of the input space are most sensitive to spatial uncertainty.
+In addition to this, the method introduced in \cite{Greydanus2018} applies the perturbation procedure pixel-wise on the input space, adding a substantial computational overhead and limiting scalability.
+
+To prevent excessive computational overhead, the authors of \cite{Huber2019} generate saliency maps using a different technique called layer-wise relevance propagation (LRP).
+This technique is a lot more efficient than perturbation-based methods, requiring only a single backward pass through the network to assign \textit{relevance scores} to neurons.
+
+To make the saliency maps more selective, the authors of \cite{Huber2019} adjust the commonly used $z^+$ rule by including an $\argmax$ operator at the end of every layer, focusing on only the most important neurons.
+While this adjustment does remove a lot of noise from the saliency maps, it comes with the risk of being \textit{too} selective, hiding relevant information.
+
+In addition to this, it should be noted that this method for constructing saliency maps is only compatible with policies that use a DQN architecture.
+While this is a very common and useful policy architecture, it is more restrictive than the work of \cite{Zahavy2016,Greydanus2018}, which is compatible with all\footnotemark[1] policy architectures.
+
+A common factor between the methods introduced by \cite{Zahavy2016,Greydanus2018,Huber2019} is that they all provide \textit{post-hoc} explanations, analyzing and interpreting the decision-making process of an agent after it has made predictions\cite{RETZLAFF2024101243}.
+The authors of \cite{Nikulin2019} introduce a highly-specific policy architecture that can construct saliency maps in real time.
+
+Since this policy architecture is able to reach a performance comparable to state-of-the-art baselines in their experiments, the authors claim that the simultaneous construction of saliency maps is a `free lunch' process.
+While these performance claims are true, we have to note that the constructed saliency maps are of noticeably lower quality than those constructed by the works of \cite{Greydanus2018,Huber2019} among others.
+
+To address this issue, the authors also introduce a second policy architecture that is more tailored to the generation of higher quality saliency maps.
+However, this architecture in turn suffers from a noticeable performance deficit compared to the same baseline methods.
+
+To round off our selection of methods, the authors of \cite{Sieusahai2021} train an inherently interpretable surrogate model to replicate the decision making of a DRL agent's original `black-box' policy.
+What sets this approach apart from the other works is that an inherently interpretable model provides model-level, \textit{ante-hoc} explanations, assuming that the features used by the model are human-interpretable\cite{RETZLAFF2024101243}.
+
+Since the input space of Atari games is purely pixel-based, the authors introduce an automatic feature encoding algorithm that efficiently identifies objects of interest from a single frame.
+While the automation of this process is great for scalability, the authors admit that the method itself is not particularly reliable, achieving mixed results in more complex games and even outright failing in others.
+
+In addition to this, we should also note that the inherently interpretable model is still an approximation of the original policy, and therefore not guaranteed to mimic the agent's decision making exactly.
+This comes alongside the risk of overfitting on the original policy, and the computational overhead of having to train two models instead of one.
+
+% NOT AUTO-ALIGNED !
+\footnotetext[1]{Compatible with any policy architecture, as long as access to logits is provided.}
+\footnotetext[2]{Although the surrogate model itself is an \textit{ante-hoc} method, it needs to be trained on traces of an existing policy, and can thus also be seen as a \textit{post-hoc} method.}
+
+%
+% Conclusion
+%
+\section{Conclusion} \label{sec:conclusion}
+In this literature review we highlight the importance of interpretability in deep reinforcement learning, the lack of which has been a cause of concern in critical domains and limits the degree to which humans can learn from DRL agents.
+We summarized, compared, and critically analyzed five state-of-the-art methods for explaining the decision-making process of a DRL agent, a concise overview of which can be found in Table \ref{tab:comparison}.
+
+Our analysis reveals that high quality, layman-interpretable explanations of DRL agents are possible, but at the cost of scalability or freedom of architecture.
+The best explanations are generated by methods that still involve human experts in the loop, with fully automated pipelines not yet reaching the same consistent quality.
+Saliency maps prove a useful tool for explaining what elements of the input space the agent attends to, but they are susceptible to noise which limits their effectiveness as explanations for non-experts.
+
+We identify multiple possible directions for future research:
+Both the human-in-the-loop as well as the automated methods could learn from each other's strengths to work towards fully automated, high quality explanations.
+There is also room to further improve the quality of saliency maps, possibly through attention-based architectures like transformers that have already seen success in other vision-based applications.
+Lastly, user studies should be performed to get an accurate understanding of the gap between layman- and expert-interpretability of the generated explanations, helping to get a clearer picture of the gap between advancements in XRL and the applicability of DRL agents in the real world.
+
+\bibliography{references}
+\bibliographystyle{unsrt}
+
+\end{document}
