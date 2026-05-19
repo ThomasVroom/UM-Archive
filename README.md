@@ -28,3 +28,4 @@ This repository acts as an archive of notes and assignments I made during my BSc
 | KEN4224 | [Data Visualization](./MSc%20-%20Artificial%20Intelligence/KEN4224%20-%20Data%20Visualization/) | 25-26 | Notes + Project |
 | KEN4246 | [Explainable Artificial Intelligence](./MSc%20-%20Artificial%20Intelligence/KEN4246%20-%20Explainable%20Artificial%20Intelligence/) | 25-26 | Project |
 | KEN4251 | [Dynamic Game Theory](./MSc%20-%20Artificial%20Intelligence/KEN4251%20-%20Dynamic%20Game%20Theory/) | 24-25 | Notes |
+| KEN4255 | [Computer Vision](./MSc%20-%20Artificial%20Intelligence/KEN4255%20-%20Computer%20Vision/) | 25-26 | Notes |

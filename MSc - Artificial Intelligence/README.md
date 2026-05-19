@@ -12,3 +12,4 @@
 | KEN4224 | [Data Visualization](./KEN4224%20-%20Data%20Visualization/) | 25-26 | Notes + Project |
 | KEN4246 | [Explainable Artificial Intelligence](./KEN4246%20-%20Explainable%20Artificial%20Intelligence/) | 25-26 | Project |
 | KEN4251 | [Dynamic Game Theory](./KEN4251%20-%20Dynamic%20Game%20Theory/) | 24-25 | Notes |
+| KEN4255 | [Computer Vision](./KEN4255%20-%20Computer%20Vision/) | 25-26 | Notes |
