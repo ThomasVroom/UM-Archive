@@ -1,0 +1,45 @@
+%
+% Conclusion
+%
+\chapter{Conclusion} \label{sec:conclusion}
+At the beginning of this thesis we set out to address the following problem statement: ``How can we train reinforcement learning agents on competitive games that receive frequent updates, with each update possibly invalidating previously learned strategies?"
+We identified continual reinforcement learning as a promising direction for addressing this problem, and investigated its potential in the domain of VGC.
+Rounding up all the experiments and results, we can now reflect back and answer the three research questions posed at the start of this thesis:
+
+\paragraph{1. What effect does non-stationarity have on the performance and generalization of reinforcement learning agents in VGC?} We showed in Chapter \ref{sec:preliminary} that reinforcement learning agents trained on one VGC regulation are consistently worse than retrained agents in other regulations, suggesting that the non-stationary input distribution caused by the different regulations seriously harms the performance of reinforcement learning agents in VGC.
+When evaluating using teams that no agent has seen before, the agents are capable of matching or even beating agents trained on future regulations, suggesting that non-stationarity has less of an impact on the generalization of reinforcement learning agents in VGC.
+
+\paragraph{2. Can continual reinforcement learning methods facilitate effective knowledge transfer across game versions?} We showed in Chapter \ref{sec:preliminary} that reinforcement learning agents can successfully transfer knowledge short-term using full fine-tuning, and we identified loss of plasticity and unstable value predictions as possible causes for degraded performance in the long term.
+In Chapter \ref{sec:methodology}, we made minor network adjustments to aid with the stability of the value predictions during training, and we proposed a progressive architecture and tuned PPO as continual reinforcement learning methods potentially capable of mitigating loss of plasticity and prolonging positive transfer.
+In Chapter \ref{sec:experiments}, we showed that our proposed network adjustments together with tuned PPO can outperform the original fine-tuned agents, and therefore transfer knowledge more effectively over multiple regulations.
+Additionally, agents trained using this combination are consistently capable of better generalization to unseen teams.
+Our proposed progressive architecture, both with and without tuned PPO, is unable to effectively transfer knowledge across regulations, but is still capable of better generalization to unseen teams than the original models.
+Our proposed network adjustments are able to marginally reduce the unstable value predictions, but the retained instability suggest these are more likely caused by a broader limitation in the policy architecture, training procedure, or VGC environment.
+Lastly, we showed that the progressive architecture does not suffer from loss of plasticity, while this still appears to be a possible issue for tuned PPO.
+
+\paragraph{3. How do continual reinforcement learning-based agents compare to fully retrained agents in terms of performance, generalization, and training cost across game updates?} While the combination of our network adjustments and tuned PPO is able to outperform the original fully fine-tuned agents, it is unable to consistently outperform agents with the same combination retrained from scratch.
+The same holds true with regards to generalization to unseen teams.
+Since all our experiments provide an upper bound of the expected performance, we can conclude that retrained agents are superior to agents that attempt to transfer knowledge across regulations in terms of performance, generalization, and training cost.
+While this means that the initial goal of knowledge transfer across regulations instead of retraining has not been not achieved, we did show that continual reinforcement learning-based agents are able to outright outperform the original agents and achieve better generalization to unseen teams, suggesting that continual reinforcement learning is still beneficial to reinforcement learning agents in VGC.
+To finish our main conclusions, we have to acknowledge that the majority of experiments in this thesis were only performed on one seed, and that we observed outliers in both the positive and negative direction.
+These conclusions are therefore largely tentative, and will benefit from further investigation on different seeds.
+
+\section{Future Work} \label{sec:futurework}
+Starting with our own work, we of course underline the importance of repeating our experiments on multiple seeds.
+We also identify multiple loose ends that we could not fully explore due to limitations in time, resources, and the scope of our research:
+
+\begin{itemize}
+    \item The value predictions shown in Chapter \ref{sec:results:analysis} still show unstable and inconsistent behavior. Getting to the bottom of this instability could lead to valuable insights into the interaction between reinforcement learning agents and the VGC environment.
+    \item We opted for a conservative L2 regularization rate of 1e-6 for tuned PPO. Seeing the promising results of this method, experimenting further with different values of this parameter is a natural next step.
+    \item Similarly, we opted for always training on 64 teams seen during training because of its increased generalization. It is still unclear how agents trained on fewer (or more) teams would transfer to different regulations.
+    \item We always fine-tune agents using the same hyperparameters as regular training. Seeing what tuned PPO achieves with only a few adjustments, optimizing these hyperparameters for fine-tuning could lead to significantly different results.
+    \item We omitted specialized optimization methods like ReDo and Continual Backprop in favor of tuned PPO. Seeing the promising results of tuned PPO, adapting these optimization methods to our policy architecture is a natural next step.
+    \item We also omitted regularization- and replay-based methods because of their focus on catastrophic forgetting, leaving it unclear what impact they could have in our problem setting.
+    \item Despite the progressive architecture not showing any promising results, its inherent lack of loss of plasticity still fits our problem setting exceptionally well and is therefore still a promising approach that needs further investigation, specifically in how to effectively transfer the learned representations of smaller transformer models.
+    \item We believe more insights could be gained by experimenting with custom regulations, allowing for better control over the scale of non-stationarity.
+    \item Lastly, our experiments could also be repeated in other, possibly simpler, games that still see natural non-stationarity. This would help separate the complexity of continual learning from the complexity of the VGC environment.
+\end{itemize}
+
+Looking more generally at the current state of continual (reinforcement) learning, we believe continual learning in non-stationary competitive games is a severely understudied domain that shows great, unexplored potential.
+Modern competitive games, like VGC, are an intuitive example of naturally evolving non-stationary environments with clearly defined rules, goals, and task boundaries.
+With continual learning aiming to solve the crucial problem of allowing agents to keep learning and improving after deployment, we believe that non-stationary competitive games could serve as a natural benchmark, facilitating a greater understanding of how machine learning agents can remain effective in ever-evolving environments.

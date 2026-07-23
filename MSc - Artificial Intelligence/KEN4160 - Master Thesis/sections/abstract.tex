@@ -1,0 +1,22 @@
+%
+% Abstract
+%
+\chapter*{Abstract}
+Many modern live-service games receive frequent updates that modify existing game mechanics, intentionally altering the strategic landscape to maintain competitive balance and player engagement.
+This poses a major challenge for the development of competitive reinforcement learning agents, whose learned strategies may suddenly be invalidated by these updates.
+In place of complete retraining after every update, we investigate whether continual reinforcement learning can facilitate effective knowledge transfer across game versions.
+The domain of this research is competitive Pokémon, also known as VGC, a challenging environment that sees natural non-stationarity through its seasonal rulesets.
+
+Our results show that reinforcement learning agents suffer greatly from non-stationarity in VGC, unable to transfer their learned knowledge to different rulesets without further training.
+We propose network adjustments aimed at stabilizing the value function, a progressive network architecture, and a tuned training algorithm as potential ways to facilitate better knowledge transfer across rulesets.
+Our results show that a combination of our proposed network adjustments and tuned training algorithm improves knowledge transfer across rulesets compared to conventional fine-tuning, while also yielding better generalization to unseen scenarios.
+While the progressive architecture exhibits similar improved generalization, it is not able to facilitate better knowledge transfer.
+
+Overall, agents trained with our proposed continual learning methods are not able to consistently outperform agents retrained from scratch in either performance or generalization, indicating that full retraining remains the most effective approach in VGC.
+Nevertheless, our proposed methods still improve the outright performance and generalization compared to traditional agents, suggesting that continual learning is still beneficial to reinforcement learning agents in VGC.
+
+% LLM usage disclosure
+\begin{NoHyper}
+    \renewcommand\thefootnote{}\footnote{\textbf{LLM Usage Disclosure:} A large language model (\textit{GPT5.5-Instant}) was used to draft several paragraphs in the Abstract, Introduction, and Background chapters. All generated content has been adapted, verified, and the original authors have been cited appropriately. We take full responsibility for all content in this thesis.}
+    \addtocounter{footnote}{-1}
+\end{NoHyper}

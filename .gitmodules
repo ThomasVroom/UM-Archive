@@ -13,3 +13,6 @@
 [submodule "MSc - Artificial Intelligence/KEN4114 - Autonomous Robotic Systems/project"]
 	path = MSc - Artificial Intelligence/KEN4114 - Autonomous Robotic Systems/project
 	url = https://github.com/ThomasVroom/ARS-Assignment
+[submodule "MSc - Artificial Intelligence/KEN4160 - Master Thesis/code"]
+	path = MSc - Artificial Intelligence/KEN4160 - Master Thesis/code
+	url = https://github.com/ThomasVroom/vgc-bench

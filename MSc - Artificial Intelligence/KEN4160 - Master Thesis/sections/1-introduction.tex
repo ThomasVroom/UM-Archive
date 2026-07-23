@@ -1,0 +1,52 @@
+%
+% Introduction
+%
+\chapter{Introduction} \label{sec:introduction}
+Seminal work in reinforcement learning (RL) has demonstrated that autonomous agents can achieve superhuman performance in complex sequential decision-making tasks.
+Landmark successes in games such as Atari, Go, StarCraft II, and Dota 2 have shown that RL agents are capable of learning elaborate strategies directly through interaction with an environment~\cite{silver2017alphazero,vinyals2019starcraft,berner2019dota}.
+These achievements have established reinforcement learning as a powerful approach to solving problems in which optimal decisions depend on long-term consequences rather than immediate rewards~\cite{silver2017alphazero}.
+
+Among this research it is typically assumed that the environment remains stationary throughout both training and deployment~\cite{sutton2018rl,ditzler2015nonstationary}.
+Under this crucial assumption the states, transition dynamics, available actions, and reward structure do not change over time, allowing an agent to gradually converge towards an effective policy.
+In practice, however, many real-world environments are inherently non-stationary: Autonomous systems operating in finance, robotics, recommendation systems, or online games must continually adapt to changing conditions without forgetting previously acquired knowledge~\cite{ditzler2015nonstationary,khetarpal2022crl}.
+
+Competitive multiplayer games provide an intuitive example of non-stationary environments.
+Unlike traditional board games, live-service games receive frequent balance patches that modify game mechanics, adjust character abilities, introduce new content, or remove existing strategies~\cite{chitayat2023gameupdates}.
+These updates intentionally alter the strategic landscape to maintain competitive balance and player engagement~\cite{chitayat2023gameupdates}.
+Consequently, reinforcement learning agents trained on one version of the game may experience degraded performance when evaluated on subsequent versions.
+Alternatively, training a reinforcement learning agent from scratch after every update is computationally expensive and might discard valuable knowledge acquired from previous versions of the game.
+
+One promising direction for addressing this problem is continual reinforcement learning (CRL)~\cite{khetarpal2022crl,wang2024cl}.
+Continual learning aims to enable an agent to acquire new knowledge while retaining previously learned capabilities, allowing it to adapt to a sequence of tasks over time~\cite{wang2024cl}.
+Continual learning methods seek to mitigate catastrophic forgetting, the tendency of neural networks to overwrite previously learned information when trained on new tasks, while facilitating positive transfer between related tasks~\cite{wang2024cl,mccloskey1989catastforget}.
+If successful, continual reinforcement learning could significantly reduce retraining costs while maintaining competitive performance as environments evolve.
+
+This thesis aims to investigate continual reinforcement learning in the context of competitive Pokémon, also known as VGC.
+VGC is an official Esports competition in which players construct teams of Pokémon under a set of rules that changes periodically through game updates, downloadable content, and seasonal rulesets~\cite{angliss2025vgc,vgc-rules-regulations}.
+In addition to introducing new Pokémon, moves, and mechanics, these updates substantially reshape the competitive metagame by altering which strategies are viable~\cite{angliss2025vgc}.
+Explicitly defined rulesets and task boundaries make VGC a compelling domain for studying continual learning in a non-stationary environment.
+
+Compared to other commonly used reinforcement learning benchmarks, VGC presents several additional challenges.
+Battles involve imperfect information, stochastic outcomes, an extremely large combinatorial state space, and long-term strategic planning~\cite{angliss2025vgc}.
+Changes between rulesets often preserve some strategic knowledge while rendering other aspects obsolete, creating opportunities for knowledge transfer, but also increasing the risk of catastrophic forgetting.
+
+The objective of this thesis is to investigate whether continual reinforcement learning methods can facilitate the effective transfer of reinforcement learning agents across successive VGC rulesets.
+We investigate the impact of changing rulesets and evaluate whether knowledge learned in earlier game versions can be transferred to newer versions without requiring a complete retraining.
+We compare continual learning approaches with conventional retraining in terms of competitive performance, generalization over unseen scenarios, and computational training cost.
+To address these objectives, we define and investigate the following problem statement and research questions:
+
+\paragraph{Problem Statement:} How can we train reinforcement learning agents on competitive games that receive frequent updates, with each update possibly invalidating previously learned strategies?
+
+\begin{enumerate}[leftmargin=3em]
+    \item[\textbf{RQ1:}] What effect does non-stationarity have on the performance and generalization of reinforcement learning agents in VGC?
+    \item[\textbf{RQ2:}] Can continual reinforcement learning methods facilitate effective knowledge transfer across game versions?
+    \item[\textbf{RQ3:}] How do continual reinforcement learning-based agents compare to fully retrained agents in terms of performance, generalization, and training cost across game updates?
+\end{enumerate}
+
+By investigating continual reinforcement learning in a realistic, evolving, competitive game environment, this thesis aims to contribute to a broader understanding of how reinforcement learning systems can remain effective in non-stationary domains.
+
+The rest of this thesis is structured as follows:
+We will first introduce relevant background work in Chapter \ref{sec:background}.
+In Chapter \ref{sec:preliminary} we will perform preliminary experiments on the effects of non-stationarity and the transferability of our environment and baseline agents.
+Based on these results, we will outline our proposed solutions in Chapter \ref{sec:methodology}, and perform our main experiments in Chapter \ref{sec:experiments}.
+We will discuss the results of these experiments in Chapter \ref{sec:discussion}, and end by outlining our final conclusions and proposing directions for future research in Chapter \ref{sec:conclusion}.

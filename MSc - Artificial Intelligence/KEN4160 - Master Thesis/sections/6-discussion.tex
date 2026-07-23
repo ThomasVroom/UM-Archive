@@ -1,0 +1,71 @@
+%
+% Discussion
+%
+\chapter{Discussion} \label{sec:discussion}
+In this Chapter we will discuss the results presented in Chapter \ref{sec:experiments}.
+
+\section{Stationary Results} \label{sec:discussion:stationary}
+Starting with the stationary results shown in Chapter \ref{sec:results:stationary}, we can see in Figures \ref{fig:stationary} and \ref{fig:stationary-pvalues} how the progressive and tuned agents match up against VGC-Bench's original RL agents in a stationary environment.
+
+Since the progressive architecture only comes into play when training across multiple regulations, the results from the progressive agents only show the impact of the network adjustments we proposed with regards to the stability of the value function, outlined at the beginning of Chapter \ref{sec:methodology}.
+The results show that these network adjustments appear to be a success, as the progressive agents consistently outperform the original agents, both in-distribution and out-of-distribution.
+Figure \ref{fig:stationary-pvalues} shows that these results are statistically significant, with the exception of regulations \textbf{G} (in-distribution), \textbf{A}, and \textbf{I} (out-of-distribution).
+
+Looking at the results of the tuned agents, it appears that they are also able to consistently beat the original agents, though we can see in Figure \ref{fig:stationary-pvalues} that half of the in-distribution results are not statistically significant.
+It also appears that the tuned agents perform slightly worse than the progressive agents, though most of these reciprocal results are also not statistically significant.
+We speculate that this may be due to tuned PPO having smaller parameter updates, leading to more underfitted models compared to regular PPO, but we do not have enough evidence to conclude this.
+When evaluated out-of-distribution, the results flip and the tuned agents outperform both the original and the progressive agents in all regulations, though the latter results are not statistically significant.
+
+We do have to acknowledge that these experiments are only performed using one seed, and may therefore show further variance when repeated on different seeds.
+Taking this into account, we can tentatively conclude that our proposed network improvements lead to better agents in stationary environments.
+Tuned agents achieve marginally worse results than agents trained using normal PPO, but in turn show marginally better generalization to unseen teams.
+
+\section{Non-Stationary Results} \label{sec:discussion:nonstationary}
+We now move to the non-stationary results shown in Chapter \ref{sec:results:nonstationary}, which show how progressive, tuned, and combined agents compare to the original fine-tuned and fully retrained agents.
+
+Starting with the progressive agents, we can see in Figures \ref{fig:progressive-experiments} and \ref{fig:progressive-pvalues} that the results are quite disappointing.
+The progressive agents are unable to achieve any statistically significant in-distribution result against the original fine-tuned agents or progressive agents trained from scratch.
+Out-of-distribution, the progressive agents appear to be able to beat the original fine-tuned and retrained agents from time to time, but they still fail to get any statistically significant result against progressive agents trained from scratch.
+
+Moving on to the tuned agents, we can see in Figures \ref{fig:tuned-experiments} and \ref{fig:tuned-pvalues} that these agents appear to achieve slightly better results.
+The tuned agents are able to beat the original fine-tuned and retrained agents in most regulations, both in-distribution and out-of-distribution, and we can see in Figure \ref{fig:tuned-pvalues} that these results are statistically significant most of the time, especially in the latter half of regulations.
+However, most of the time, we also see that the tuned agents are not significantly better than tuned agents trained from scratch.
+
+Lastly, we can see in Figures \ref{fig:combined-experiments} and \ref{fig:combined-pvalues} that the combined agents appear to achieve slightly more promising results than the progressive agents, but not as good as the tuned agents.
+In-distribution, the combined agents are sometimes able to achieve a statistically significant result against the original agents, but are clearly worse than progressive or tuned agents trained from scratch.
+Out-of-distribution, the combined agents can significantly outperform the original fine-tuned and retrained agents most of the time, but they still fall short of the retrained progressive and tuned agents.
+
+In Figure \ref{fig:compared-experiments} we compare the progressive, tuned, and combined agents directly to each other in each regulation.
+These results appear similar to what we have already seen in the other experiments: The progressive agents consistently perform the worst, followed by the combined and tuned agents respectively.
+In-distribution, the tuned agents are clearly superior in most regulations, beating the other agents with statistical significance in all but regulations \textbf{G} and \textbf{I}.
+Out-of-distribution, the results are more varied and mostly statistically insignificant, suggesting the agents are capable of similar generalization.
+
+We again have to acknowledge that these experiments are only performed using one seed.
+Taking this into account, we tentatively conclude that our proposed progressive architecture is unable to improve the performance of VGC-Bench's RL agents in a non-stationary setting.
+Agents trained and fine-tuned using tuned PPO are capable of beating fine-tuned or retrained VGC-Bench agents, but cannot consistently beat tuned agents trained from scratch.
+Combining a progressive architecture with tuned PPO performs slightly better than a progressive architecture alone, but still worse than tuned PPO alone.
+Finally, all of the progressive, tuned, and combined agents achieve significantly better generalization to unseen teams than VGC-Bench's original agents.
+
+\section{Analysis Results} \label{sec:discussion:analysis}
+Lastly, we discuss the results shown in Chapter \ref{sec:results:analysis} as part of the analysis into various statistics of the progressive and tuned agents in regulations \textbf{F} and \textbf{G}.
+
+The first experiment involves the mean pairwise distances between the agents' action probabilities, shown in Figure \ref{fig:jsd-experiments}.
+Generally speaking, we can see that there is not much variation between the mean distances, but there are some notable exceptions.
+In all subfigures we can see that the progressive agent fine-tuned up to the current regulation is closer in behavior to the agent trained from scratch than to its source model, highlighting how a progressive architecture inherently does not suffer from loss of plasticity.
+Conversely, the tuned agents are notably closer to their source models than to the agents trained from scratch, suggesting they are still experiencing some loss of plasticity.
+
+Figure \ref{fig:value-experiments} shows the value predictions of the agents plotted against the normalized depth.
+The main thing that stands out here is that, despite the network adjustments we proposed specifically in view of the unstable value predictions in the preliminary experiments, the value predictions still show some unexpected and inconsistent behavior.
+Looking back to the value predictions in the preliminary experiments, shown in Figure \ref{fig:value}, we can still draw some comparisons.
+
+The first thing of note is that the variance between the different agents appears to have shrunk, with most lines in Figure \ref{fig:value-experiments} following near identical trajectories, especially for earlier observations.
+One thing that initially stood out to us about the value predictions in the preliminary experiments is that there are moments where the mean value prediction drifts outside of the range of the reward function, $[-1,1]$.
+Although we can still observe this happening in Figure \ref{fig:value-experiments-regg-indist}, the amount and fraction spent outside of the reward range has decreased compared to the preliminary experiments.
+Lastly, we can observe a general trend that the mean predictions start around zero as expected, and only grow more extreme and unstable as the observations get deeper into the episode.
+This trend is also visible in Figure \ref{fig:value}, but more pronounced in these more recent experiments.
+All things considered, these comparisons suggest that our proposed network adjustments did have a measurable effect on the agents' value function, but that most of the unexpected and inconsistent behavior is likely caused by a broader limitation in the policy architecture, training procedure, or environment.
+
+The last experiment involves visualizing the distribution of action logits using a t-SNE visualization, the results of which can be found in Figure \ref{fig:tsne-progressive} for the progressive agents.
+Here we can clearly observe that each agents' action logits can be clearly distinguished from the other agents', again highlighting how a progressive architecture inherently does not suffer from loss of plasticity.
+The t-SNE visualizations for tuned agents can be found in Figures \ref{fig:tsne-tuned} and \ref{fig:tsne-tuned-lines}.
+These results look near identical to Figures \ref{fig:tsne} and \ref{fig:tsne-lines} from the preliminary experiments, suggesting that the tuned agents are still experiencing some loss of plasticity.

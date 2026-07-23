@@ -24,6 +24,7 @@ This repository acts as an archive of notes and assignments I made during my BSc
 | KEN4114 | [Autonomous Robotic Systems](./MSc%20-%20Artificial%20Intelligence/KEN4114%20-%20Autonomous%20Robotic%20Systems/) | 24-25 | Notes + Project |
 | KEN4123 | [Intelligent Search & Games](https://github.com/ThomasVroom/Fianco) | 24-25 | Project |
 | KEN4157 | [Reinforcement Learning](https://github.com/ThomasVroom/Adversarial-LunarLander) | 24-25 | Project |
+| KEN4160 | [Master Thesis](./MSc%20-%20Artificial%20Intelligence/KEN4160%20-%20Master%20Thesis/) | 25-26 | Code + Slides + Paper |
 | KEN4221 | [Stochastic Decision Making](./MSc%20-%20Artificial%20Intelligence/KEN4221%20-%20Stochastic%20Decision%20Making/) | 24-25 | Notes |
 | KEN4224 | [Data Visualization](./MSc%20-%20Artificial%20Intelligence/KEN4224%20-%20Data%20Visualization/) | 25-26 | Notes + Project |
 | KEN4246 | [Explainable Artificial Intelligence](./MSc%20-%20Artificial%20Intelligence/KEN4246%20-%20Explainable%20Artificial%20Intelligence/) | 25-26 | Project |

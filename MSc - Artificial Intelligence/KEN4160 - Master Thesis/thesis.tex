@@ -1,0 +1,67 @@
+\documentclass[10pt]{reportMaster}
+
+\usepackage[a4paper]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage[hang,flushmargin]{footmisc}
+\usepackage[backend=biber,sorting=none]{biblatex}
+
+\graphicspath{/images}
+\addbibresource{bibliography.bib}
+% \hypersetup{hidelinks} % uncomment for hidden links
+
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\newtheorem{assumption}{Assumption}
+
+\title{Continual Reinforcement Learning for Evolving Games: Learning Across Game Updates in Competitive Pokémon}
+\author{Thomas Vroom}
+
+\nameMastersProgramme{Artificial Intelligence}
+\committee{Dr. D.J.N.J. Soemers \\ Dr. Ir. K. Driessens}
+
+\begin{document}
+
+% title page
+\maketitle
+
+% abstract
+\input{sections/abstract.tex}
+
+% table of contents
+\tableofcontents
+
+% chapters
+\newpage
+\input{sections/1-introduction.tex}
+\newpage
+\input{sections/2-background.tex}
+\newpage
+\input{sections/3-analysis.tex}
+\newpage
+\input{sections/4-methodology.tex}
+\newpage
+\input{sections/5-experiments.tex}
+\newpage
+\input{sections/6-discussion.tex}
+\newpage
+\input{sections/7-conclusion.tex}
+
+% references
+\newpage
+\sloppy
+\printbibliography
+
+% appendix
+\newpage
+\input{sections/appendix.tex}
+
+\end{document}
